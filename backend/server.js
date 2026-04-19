@@ -19,39 +19,39 @@ dbConnector.connect((err)=>{
   }
   console.log("Database connection successful.");
 
-  //database creation process
+  //1. database creation process
   const queryCreateDB = `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`;
   dbConnector.query(queryCreateDB, (err,result)=>{
-  if(err){ 
-    console.log("Failed to create Db. Error:" + err);
-  return;
-  }
-  console.log(`Database ${process.env.DB_NAME} created`);
-  });
-  //using the database
-  dbConnector.query(`USE ${process.env.DB_NAME}`, (err,result)=>{
-    if(err){console.log("Failed to use Db. Error:" + err);}
-    else{console.log(`Using database ${process.env.DB_NAME}`);}
-  });
+    if(err){ 
+      console.log("Failed to create Db. Error:" + err);
+    return;
+    }
+    console.log(`Database ${process.env.DB_NAME} created`);
+  
+    //2. using the database
+    dbConnector.query(`USE ${process.env.DB_NAME}`, (err,result)=>{
+      if(err){console.log("Failed to use Db. Error:" + err);}
+      else{console.log(`Using database ${process.env.DB_NAME}`);
+          //3. table creation process
+        const queryCreateTable = `CREATE TABLE IF NOT EXISTS products (
+        product_id INT AUTO_INCREMENT PRIMARY KEY,
+        product_name VARCHAR(100) NOT NULL UNIQUE,
+        product_description TEXT
+        );`;
+        dbConnector.query(queryCreateTable, (err,result)=>{
+          if(err){throw err;}
+          console.log("Table created successfully.");
 
-  //table creation process
-  const queryCreateTable = `CREATE TABLE IF NOT EXISTS products (
-    product_id INT AUTO_INCREMENT PRIMARY KEY,
-    product_name VARCHAR(100) NOT NULL UNIQUE,
-    product_description TEXT
-    );`;
-    dbConnector.query(queryCreateTable, (err,result)=>{
-      if(err){throw err;}
-      console.log("Table created successfully.");
-
-      //insert data
-      const queryInsertData = `INSERT INTO products (product_name, product_description) VALUES ('pn_iphone', 'iPhone description')`;
-      dbConnector.query(queryInsertData, (err,result)=>{
-        if(err){throw err;} 
-        console.log("Data inserted successfully.");
-      });
+          //4. insert data
+          const queryInsertData = `INSERT INTO products (product_name, product_description) VALUES ('pn_iphone', 'iPhone description')`;
+          dbConnector.query(queryInsertData, (err,result)=>{
+            if(err){throw err;} 
+            console.log("Data inserted successfully.");
+          });
+        });
+      };
     });
-
+  });
 });
 
 
