@@ -1,0 +1,6 @@
+# Ignore backend dependencies
+backend/node_modules/
+
+# Ignore environment variables (Security Best Practice)
+.env
+backend/.env
